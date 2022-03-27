@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 //Getting all submissions
-router.get('/problem/', async (req, res) => {
+router.get('/id/', async (req, res) => {
   try {
     const testcase = await TestCase.find({
       problem_id: req.body.problem_id
@@ -30,7 +30,7 @@ router.get('/problem/', async (req, res) => {
   }
 });
 
-//Creating account
+//Creating tescase
 router.post('/', async (req, res) => {
   const testcase = new TestCase({
     input: req.body.input,

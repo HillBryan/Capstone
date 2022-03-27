@@ -3,6 +3,7 @@ const fs = require('fs');
 var exec = require('child_process').exec;
 const router = express.Router();
 const Submission = require('../model/submissionModel.js');
+const TestCase = require('../model/testcaseModel.js')
 
 //Getting all submissions
 router.get('/', async (req, res) => {
@@ -36,9 +37,11 @@ router.post('/solve/', async (req, res) => {
     const foundSubmission = await Submission.find({
       _id: req.body.id
     });
-
     let submission = foundSubmission[0];
 
+    const testcases = await TestCase.find({
+      problem_id: submission.problem_id
+    });
     // Writing submission to file
     fs.writeFile(submission.className + '.java', submission.submissionText, err => {
       if (err) {
@@ -57,36 +60,65 @@ router.post('/solve/', async (req, res) => {
             })
           );
         } else {
+
+
           // Need to get testcase input and output at this point.
-          testcase = 'Testing123';
-          exec('java ' + submission.className, function (error, stdOut, stdErr) {
-            if (error || stdErr) {
-              Submission.updateOne(
-                { "_id": submission._id}, // Filter
-                {$set: {"status": 'Run Time Error'}} // Update
-              ).then(
-                res.status(400).json({
-                  status: 'Run Time Error'
-                })
-              );
-            } 
-            else if (stdOut.trim() !== testcase.trim()) {
-              Submission.updateOne(
-                { "_id": submission._id}, // Filter
-                {$set: {"status": 'Test Case Fail'}} // Update
-              ).then(
-                res.status(400).json({
-                  status: 'Test Case Fail'
-                })
-              );
-            } else {
-              // res.status(200).json({
-              //   status: 'Pass',
-              //   // Patch submission to save progress.
-              //   // TODO: Figure out how to respond via JSON for this on multiple cases.
-              // });
-            }
-          });
+          let passed = 0;
+          let valid = true;
+
+          for (let i = 0; i < testcases.length && valid === true; i += 1) {
+            let testcase = testcases[i];
+            let testcase_input = testcase.input;
+            let testcase_output = testcase.output;
+
+
+            // Need to write file with input
+            await fs.writeFile('input.txt', testcase_input, err => {
+              if (err) {
+                console.error(err)
+                return
+              }
+              console.log(i);
+              exec('java ' + submission.className + ' < input.txt', function (error, stdOut, stdErr) {
+                if ((error || stdErr) && valid) {
+                  console.log(error, stdErr);
+                  valid = false;
+                  Submission.updateOne(
+                    { "_id": submission._id}, // Filter
+                    {$set: {"status": 'Run Time Error'}} // Update
+                  ).then(
+                    res.status(400).json({
+                      status: 'Run Time Error'
+                    })
+                  );
+                } 
+                else if (stdOut.trim() !== testcase_output.trim() && valid) {
+                  valid = false;
+                  console.log(stdOut.trim(), testcase_output.trim());
+                  console.log(testcase_input, testcase.output);
+                  Submission.updateOne(
+                    { "_id": submission._id}, // Filter
+                    {$set: {"status": 'Test Case Fail'}} // Update
+                  ).then(
+                    res.status(400).json({
+                      status: 'Test Case Fail'
+                    })
+                  );
+                } else{
+                  // Update passed testcases here.
+                  if (valid) {
+                    passed = passed + 1;
+                    Submission.updateOne(
+                      { "_id": submission._id}, // Filter
+                      {$set: {"passed": passed}} // Update
+                    ).then(
+                      console.log('done')
+                    );
+                  }
+                }
+              });
+            });
+          };
         }
       });
     });

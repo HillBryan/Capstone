@@ -17,8 +17,12 @@ app.use(express.json());
 
 //Routes
 const submissionRoute = require('./routes/submission');
+const testCaseRoute = require('./routes/testcase');
+const problemRoute = require('./routes/problem');
 
 app.use('/rest/submission', submissionRoute);
+app.use('/rest/testcase', testCaseRoute);
+app.use('/rest/problem', problemRoute);
 
 //Creating server on port 3000.
 app.listen(3013, () => console.log('Server Started'));

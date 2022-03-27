@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const problemSchema = new mongoose.Schema(
   {
+    title: {
+      type: String,
+      required: true
+    },
     statement: {
         type: String,
         required: true
@@ -13,6 +17,10 @@ const problemSchema = new mongoose.Schema(
     example_out: {
         type: String,
         required: true 
+    },
+    difficulty: {
+        type: String,
+        required: false
     },
     class_id: {
       type: String,
@@ -27,4 +35,4 @@ const problemSchema = new mongoose.Schema(
     timestamps: true 
   });
 
-module.exports = mongoose.model('Submission', problemSchema);
+module.exports = mongoose.model('Problem', problemSchema);

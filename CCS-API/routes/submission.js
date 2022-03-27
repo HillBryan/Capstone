@@ -30,6 +30,74 @@ router.get('/id/', async (req, res) => {
   }
 });
 
+//Solving submission
+router.get('/solve/', async (req, res) => {
+  try {
+    const foundSubmission = await Submission.find({
+      _id: req.body.id
+    });
+
+    let submission = foundSubmission[0];
+
+    // Writing submission to file
+    fs.writeFile(submission.className + '.java', submission.submissionText, err => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      //file written successfully
+      exec('javac ' + submission.className + '.java', function (error, stdOut, stdErr) {
+        if (error || stdOut || stdErr) {
+          Submission.updateOne(
+            { "_id": submission._id}, // Filter
+            {$set: {"status": 'Compile Error'}} // Update
+          ).then(
+            res.status(400).json({
+              status: 'Compile Error'
+            })
+          );
+        } else {
+          // Need to get testcase input and output at this point.
+          testcase = 'Testing';
+          exec('java ' + submission.className, function (error, stdOut, stdErr) {
+            if (error || stdErr) {
+              Submission.updateOne(
+                { "_id": submission._id}, // Filter
+                {$set: {"status": 'Run Time Error'}} // Update
+              ).then(
+                res.status(400).json({
+                  status: 'Run Time Error'
+                })
+              );
+            } 
+            else if (stdOut.trim() !== testcase.trim()) {
+              Submission.updateOne(
+                { "_id": submission._id}, // Filter
+                {$set: {"status": 'Test Case Fail'}} // Update
+              ).then(
+                res.status(400).json({
+                  status: 'Test Case Fail'
+                })
+              );
+            } else {
+              res.status(200).json({
+                status: 'Pass',
+                // Patch submission to save progress.
+                // TODO: Figure out how to respond via JSON for this on multiple cases.
+              });
+            }
+          });
+        }
+      });
+    });
+    
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
 
 //Creating account
 router.post('/', async (req, res) => {
@@ -43,46 +111,9 @@ router.post('/', async (req, res) => {
   });
   try {
     const newSubmission = await submission.save();
-
-    // Writing submission to file
-    fs.writeFile(submission.className + '.java', submission.submissionText, err => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      //file written successfully
-      exec('javac ' + submission.className + '.java', function (error, stdOut, stdErr) {
-        if (error || stdOut || stdErr) {
-          ok = false;
-          res.status(400).json({
-            status: 'Compile Error'
-          });
-        } else {
-          // Need to get testcase input and output at this point.
-          testcase = 'Testing';
-          exec('java ' + submission.className, function (error, stdOut, stdErr) {
-            if (error || stdErr) {
-              ok = false;
-              res.status(400).json({
-                status: 'Run Time Error'
-              });
-            } 
-            else if (stdOut.trim() !== testcase.trim()) {
-              res.status(400).json({
-                status: 'Test Case Fail'
-              });
-            } else {
-              res.status(200).json({
-                status: 'Pass',
-                submission_id: newSubmission._id
-              });
-            }
-          });
-        }
-      });
+    res.status(200).json({
+      id: newSubmission._id
     });
-
-
   } catch (err) {
     res.status(500).json({
       message: 'Error Submitting: ' + err

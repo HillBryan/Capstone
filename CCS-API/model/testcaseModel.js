@@ -19,4 +19,4 @@ const testcaseSchema = new mongoose.Schema(
     timestamps: true 
   });
 
-module.exports = mongoose.model('Submission', testcaseSchema);
+module.exports = mongoose.model('TestCase', testcaseSchema);

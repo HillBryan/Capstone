@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 //Getting submissions by id
-router.get('/id/', async (req, res) => {
+router.post('/id/', async (req, res) => {
   try {
     const submission = await Submission.find({
       _id: req.body.id
@@ -31,7 +31,7 @@ router.get('/id/', async (req, res) => {
 });
 
 //Solving submission
-router.get('/solve/', async (req, res) => {
+router.post('/solve/', async (req, res) => {
   try {
     const foundSubmission = await Submission.find({
       _id: req.body.id
@@ -58,7 +58,7 @@ router.get('/solve/', async (req, res) => {
           );
         } else {
           // Need to get testcase input and output at this point.
-          testcase = 'Testing';
+          testcase = 'Testing123';
           exec('java ' + submission.className, function (error, stdOut, stdErr) {
             if (error || stdErr) {
               Submission.updateOne(
@@ -80,11 +80,11 @@ router.get('/solve/', async (req, res) => {
                 })
               );
             } else {
-              res.status(200).json({
-                status: 'Pass',
-                // Patch submission to save progress.
-                // TODO: Figure out how to respond via JSON for this on multiple cases.
-              });
+              // res.status(200).json({
+              //   status: 'Pass',
+              //   // Patch submission to save progress.
+              //   // TODO: Figure out how to respond via JSON for this on multiple cases.
+              // });
             }
           });
         }
@@ -106,8 +106,9 @@ router.post('/', async (req, res) => {
     submissionText: req.body.submissionText,
     className: req.body.className,
     user_id: req.body.user_id,
+    status: req.body.status ? req.body.status : 'Not Started',
     problem_id: req.body.problem_id,
-    passed: req.body.passed ? req.body.passed : 10
+    passed: req.body.passed ? req.body.passed : 0
   });
   try {
     const newSubmission = await submission.save();

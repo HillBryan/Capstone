@@ -34,7 +34,7 @@
     <div class="buttons">
         <div class="buttons-wrapper">
             <button type="button" class="btn btn-secondary" @click="goBack()">Back</button>
-            <button type="button" class="btn btn-primary mr-0">Submit</button>
+            <button type="button" class="btn btn-primary mr-0" @click="route()">Solve</button>
         </div>
     </div>
   </div>
@@ -54,7 +54,10 @@ export default {
   methods: {
       goBack() {
           this.$router.go(-1);
-      }
+      },
+      route() {
+          this.$router.push({ name: 'Solve', params: { id: this.problem._id } })
+      },
   },
   mounted() {
     this.postData("http://localhost:3013/rest/problem/id/", "POST", {
@@ -67,11 +70,6 @@ export default {
 </script>
 
 <style scoped>
-.problem {
-  display: flex;
-  flex-direction: column;
-}
-
 .inputOutput {
   display: flex;
   flex-direction: row;

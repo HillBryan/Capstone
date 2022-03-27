@@ -61,26 +61,21 @@ router.post('/solve/', async (req, res) => {
           );
         } else {
 
-
-          // Need to get testcase input and output at this point.
-          let passed = 0;
           let valid = true;
 
-          for (let i = 0; i < testcases.length && valid === true; i += 1) {
-            let testcase = testcases[i];
-            let testcase_input = testcase.input;
-            let testcase_output = testcase.output;
 
 
-            // Need to write file with input
-            await fs.writeFile('input.txt', testcase_input, err => {
+          let wrapperFunction = function(testcase_input, testcase_output, i) {
+            return new Promise((resolve, reject) => {
+                          // Need to write file with input
+            fs.writeFile('input.txt', testcase_input, err => {
               if (err) {
-                console.error(err)
-                return
+                valid = false;
+                console.error(err);
+                return;
               }
-              console.log(i);
               exec('java ' + submission.className + ' < input.txt', function (error, stdOut, stdErr) {
-                if ((error || stdErr) && valid) {
+                if (error || stdErr) {
                   console.log(error, stdErr);
                   valid = false;
                   Submission.updateOne(
@@ -92,10 +87,9 @@ router.post('/solve/', async (req, res) => {
                     })
                   );
                 } 
-                else if (stdOut.trim() !== testcase_output.trim() && valid) {
-                  valid = false;
+                else if (stdOut.trim() !== testcase_output.trim()) {
                   console.log(stdOut.trim(), testcase_output.trim());
-                  console.log(testcase_input, testcase.output);
+                  valid = false;
                   Submission.updateOne(
                     { "_id": submission._id}, // Filter
                     {$set: {"status": 'Test Case Fail'}} // Update
@@ -106,19 +100,36 @@ router.post('/solve/', async (req, res) => {
                   );
                 } else{
                   // Update passed testcases here.
-                  if (valid) {
-                    passed = passed + 1;
                     Submission.updateOne(
                       { "_id": submission._id}, // Filter
-                      {$set: {"passed": passed}} // Update
+                      {$set: {"passed": (i + 1)}} // Update
                     ).then(
-                      console.log('done')
+                      resolve()
                     );
-                  }
                 }
               });
             });
+            });
           };
+
+          const testAllCases = async () => {
+            for (let i = 0; i < testcases.length && valid === true; i += 1) {
+              let testcase = testcases[i];
+              let testcase_input = testcase.input;
+              let testcase_output = testcase.output;
+  
+              await wrapperFunction(testcase_input, testcase_output, i);
+  
+            };
+          };
+
+          testAllCases().then(() => {
+            if (valid) {
+              res.status(200).json({
+                status: 'Pass'
+              })
+            }
+          });
         }
       });
     });

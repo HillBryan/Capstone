@@ -69,13 +69,13 @@ router.post("/solve/", async (req, res) => {
               let wrapperFunction = function (testcase_input, testcase_output, i) {
                 return new Promise((resolve, reject) => {
                   // Need to write file with input
-                  fs.writeFile("input.txt", testcase_input, (err) => {
+                  fs.writeFile(submission._id + ".txt", testcase_input, (err) => {
                     if (err) {
                       valid = false;
                       console.error(err);
                       return;
                     }
-                    exec("java " + submission.className + " < input.txt", function (error, stdOut, stdErr) {
+                    exec("java " + submission.className + " < " + submission._id + ".txt", function (error, stdOut, stdErr) {
                         if (error || stdErr) {
                             console.log(error, stdErr);
                             valid = false;

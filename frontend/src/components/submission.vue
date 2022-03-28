@@ -21,6 +21,9 @@
         <h5>
           Status: <span class="textSize">{{ this.status }}</span>
         </h5>
+        <h5 v-if="status === 'Passed' && end">
+          Time: <span class="textSize">{{ Math.round(this.end / this.numberOfTestCases)}}ms</span>
+        </h5>
       </div>
       <div class="boxes">
         <input
@@ -54,6 +57,8 @@ export default {
       expected: "",
       actual: "",
       input: "",
+      start: Date.now(),
+      end: 0,
     };
   },
   methods: {
@@ -99,6 +104,7 @@ export default {
         this.postData("http://localhost:3013/rest/submission/solve/", "POST", {
           id: this.$route.params.id,
         }).then((data) => {
+          this.end = Date.now() - this.start;
           if (data.status === "Wrong Answer") {
             this.expected = data.expected;
             this.actual = data.actual;

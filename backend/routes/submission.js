@@ -92,10 +92,11 @@ router.post("/solve/", async (req, res) => {
                             valid = false;
                             Submission.updateOne(
                               { _id: submission._id }, // Filter
-                              { $set: { status: "Test Case Fail" } } // Update
+                              { $set: { status: "Wrong Answer" } } // Update
                             ).then(
                               res.status(200).json({
-                                status: "Test Case Fail",
+                                status: "Wrong Answer",
+                                input: testcase_input,
                                 expected: testcase_output.trim(),
                                 actual: stdOut.trim()
                               })

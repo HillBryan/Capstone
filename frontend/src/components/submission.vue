@@ -18,7 +18,9 @@
     </div>
     <div class="grading">
       <div class="status">
-        <h5>Status: <span class="textSize">{{ this.status }}</span></h5>
+        <h5>
+          Status: <span class="textSize">{{ this.status }}</span>
+        </h5>
       </div>
       <div class="boxes">
         <input
@@ -28,6 +30,9 @@
           class="box"
           :checked="isChecked(index)"
         />
+      </div>
+      <div v-if="this.status === 'Wrong Answer' && this.input">
+        <p>Input: {{ this.input }}, Expected: {{ this.expected }}, Actual: {{ this.actual }}</p>
       </div>
     </div>
   </div>
@@ -45,16 +50,11 @@ export default {
       status: "In Queue",
       numberOfTestCases: 0,
       passedTestCases: 0,
+      interval: undefined,
+      expected: "",
+      actual: "",
+      input: "",
     };
-  },
-  computed: {
-      getColor() {
-          return {
-              'textBlack': this.status === 'In Queue',
-              'textGreen': this.status === 'passed',
-              'textRed': this.status !== 'passed'
-          }
-      },
   },
   methods: {
     isChecked(index) {
@@ -62,15 +62,21 @@ export default {
     },
     timer() {
       // Set time out
-      let interval = setInterval(() => {
+      this.interval = setInterval(() => {
         // Need to get submission and find passed testcases.
         this.postData("http://localhost:3013/rest/submission/id/", "POST", {
           id: this.$route.params.id,
         }).then((data) => {
-          console.log(data[0].passed);
           this.passedTestCases = data[0].passed;
           this.status = data[0].status;
-          if (this.passedTestCases === this.numberOfTestCases) clearInterval(interval);
+          if (
+            this.passedTestCases === this.numberOfTestCases ||
+            this.status === "Wrong Answer" ||
+            this.status === "Compile Error" ||
+            this.status === "Run Time Error"
+          ) {
+            clearInterval(this.interval);
+          }
         });
       }, 500);
     },
@@ -87,18 +93,25 @@ export default {
         problem_id: this.submission.problem_id,
       }).then((data) => {
         this.numberOfTestCases = data.length;
-        console.log(this.numberOfTestCases);
       });
 
       if (this.submission.status === "Not Started") {
         this.postData("http://localhost:3013/rest/submission/solve/", "POST", {
           id: this.$route.params.id,
         }).then((data) => {
-          console.log(data);
+          if (data.status === "Wrong Answer") {
+            this.expected = data.expected;
+            this.actual = data.actual;
+            this.input = data.input;
+          }
+          
         });
       }
     });
     this.timer();
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   },
 };
 </script>
@@ -114,21 +127,22 @@ export default {
   width: 2rem;
   height: 2rem;
   margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .textGreen {
-    color: green;
+  color: green;
 }
 
 .textRed {
-    color: red;
+  color: red;
 }
 
 .textBlack {
-    color: black;
+  color: black;
 }
 
 .textSize {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 </style>

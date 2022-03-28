@@ -86,6 +86,7 @@ export default {
 .input {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .textInput {

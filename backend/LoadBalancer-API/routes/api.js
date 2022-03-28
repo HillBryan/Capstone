@@ -30,7 +30,7 @@ router.post('/index/', async (req, res) => {
 });
 
 //Getting api balanced
-router.get('/ip/', async (req, res) => {
+router.post('/ip/', async (req, res) => {
   try {
     const indexRecord = await Index.find();
     console.log(indexRecord);
@@ -45,9 +45,7 @@ router.get('/ip/', async (req, res) => {
       { _id: indexRecord[0]._id }, // Filter
       { $set: { index: ((indexRecord[0].index + 1) % 3) } } // Update
     ).then(
-      res.status(200).json({
-        server,
-      })
+      res.status(200).json(server)
     );
   } catch (err) {
     console.log(err);

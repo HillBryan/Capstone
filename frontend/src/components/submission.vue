@@ -22,7 +22,10 @@
           Status: <span class="textSize">{{ this.status }}</span>
         </h5>
         <h5 v-if="status === 'Passed' && end">
-          Time: <span class="textSize">{{ Math.round(this.end / this.numberOfTestCases)}}ms</span>
+          <p class="textSize">
+            Average: {{ Math.round(this.end / this.numberOfTestCases) }}ms
+          </p>
+          <p class="textSize">Total: {{ this.end }}ms</p>
         </h5>
       </div>
       <div class="boxes">
@@ -35,7 +38,10 @@
         />
       </div>
       <div v-if="this.status === 'Wrong Answer' && this.input">
-        <p>Input: {{ this.input }}, Expected: {{ this.expected }}, Actual: {{ this.actual }}</p>
+        <p>
+          Input: {{ this.input }}, Expected: {{ this.expected }}, Actual:
+          {{ this.actual }}
+        </p>
       </div>
     </div>
   </div>
@@ -59,6 +65,7 @@ export default {
       input: "",
       start: Date.now(),
       end: 0,
+      ipaddr: "",
     };
   },
   methods: {
@@ -88,32 +95,37 @@ export default {
   },
   mounted() {
     // Solving problem on load.
-    this.postData("http://localhost:3013/rest/submission/id/", "POST", {
-      id: this.$route.params.id,
-    }).then((data) => {
-      this.submission = data[0];
 
-      // Need to get number of testcases
-      this.postData("http://localhost:3013/rest/testcase/id/", "POST", {
-        problem_id: this.submission.problem_id,
-      }).then((data) => {
-        this.numberOfTestCases = data.length;
-      });
-
-      if (this.submission.status === "Not Started") {
-        this.postData("http://localhost:3013/rest/submission/solve/", "POST", {
+    this.postData("http://localhost:3014/rest/balance/ip/", "POST", {}).then(
+      (data) => {
+        this.ipaddr = data[0].ip;
+        this.postData("http://localhost:3013/rest/submission/id/", "POST", {
           id: this.$route.params.id,
         }).then((data) => {
-          this.end = Date.now() - this.start;
-          if (data.status === "Wrong Answer") {
-            this.expected = data.expected;
-            this.actual = data.actual;
-            this.input = data.input;
+          this.submission = data[0];
+
+          // Need to get number of testcases
+          this.postData("http://localhost:3013/rest/testcase/id/", "POST", {
+            problem_id: this.submission.problem_id,
+          }).then((data) => {
+            this.numberOfTestCases = data.length;
+          });
+          console.log("ip", this.ipaddr);
+          if (this.submission.status === "Not Started") {
+            this.postData(this.ipaddr + "/rest/submission/solve/", "POST", {
+              id: this.$route.params.id,
+            }).then((data) => {
+              this.end = Date.now() - this.start;
+              if (data.status === "Wrong Answer") {
+                this.expected = data.expected;
+                this.actual = data.actual;
+                this.input = data.input;
+              }
+            });
           }
-          
         });
       }
-    });
+    );
     this.timer();
   },
   beforeDestroy() {

@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 //Getting all submissions
-router.get('/id/', async (req, res) => {
+router.post('/id/', async (req, res) => {
   try {
     const testcase = await TestCase.find({
       problem_id: req.body.problem_id

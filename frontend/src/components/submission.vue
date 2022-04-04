@@ -112,7 +112,8 @@ export default {
           });
           console.log("ip", this.ipaddr);
           if (this.submission.status === "Not Started") {
-            this.postData(this.ipaddr + "/rest/submission/solve/", "POST", {
+            // this.postData(this.ipaddr + "/rest/submission/solve/", "POST", {
+            this.postData("http://localhost:3013/rest/submission/solve/", "POST", {
               id: this.$route.params.id,
             }).then((data) => {
               this.end = Date.now() - this.start;
@@ -163,4 +164,5 @@ export default {
 .textSize {
   font-size: 1.5rem;
 }
+
 </style>

@@ -6,9 +6,7 @@
     </div>
     <div class="code">
       <textarea
-        class="form-control"
-        rows="20"
-        cols="100"
+        id="input"
         placeholder="Enter code here..."
         v-model="code"
       ></textarea>
@@ -39,6 +37,10 @@
 
 <script>
 import ApiMixin from "../mixins/api_mixin";
+import * as CodeMirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/ayu-dark.css';
+import 'codemirror/mode/clike/clike.js'
 
 export default {
   name: "solve",
@@ -48,6 +50,7 @@ export default {
       problem: {},
       code: "",
       className: "",
+      codeMirror: null,
     };
   },
   methods: {
@@ -55,11 +58,12 @@ export default {
       this.$router.go(-1);
     },
     route() {
-        if (!this.className || this.className.includes('.java') || !this.code) {
+        let code = this.codeMirror.getValue();
+        if (!this.className || this.className.includes('.java') || !code) {
             alert("Class name / code must not be empty and not include .java");
         } else {
             let body = {
-                submissionText: this.code,
+                submissionText: code,
                 className: this.className,
                 user_id: 'Bryan',
                 problem_id: this.$route.params.id
@@ -77,6 +81,16 @@ export default {
     }).then((data) => {
       this.problem = data[0];
     });
+
+    this.codeMirror = CodeMirror.fromTextArea(document.getElementById('input'), {
+      lineNumbers: true,
+      theme: 'ayu-dark',
+      mode: 'text/x-java',
+      matchBrackets: true,
+      autoCloseBrackets: true,
+    });
+
+    this.codeMirror.setSize(null, '25rem')
   },
 };
 </script>
@@ -98,7 +112,6 @@ export default {
 .enterText {
     width: 70%;
 }
-
 
 .btn {
   margin: 10px;

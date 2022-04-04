@@ -22,4 +22,13 @@
 
 <style>
 
+#app {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.container {
+  min-height: 100vh;
+}
+
 </style>

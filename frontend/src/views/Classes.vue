@@ -1,13 +1,16 @@
 <template>
   <div class="container mt-2">
-    <div class="header">
+    <div v-if="spinner" class="spinner-border spinner" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div v-if="!spinner" class="header">
       <h1>Courses</h1>
     </div>
     <hr />
-    <div class="Courses">
+    <div v-if="!spinner" class="Courses">
       <card v-for="course in courses" :key="course.id" :course="course"></card>
-      <div class="cardAdd" @click="show = true">
-        <h1 class="text-center m-auto">Add Class <span>&#10753;</span></h1>
+      <div class="cardAdd ml-auto mr-auto" @click="show = true">
+        <h4 class="text-center m-auto">Add Class <span>&#10753;</span></h4>
       </div>
     </div>
     <div v-if="show">
@@ -75,6 +78,7 @@ export default {
   data: function () {
     return {
       show: false,
+      spinner: true,
       courses: [
         {
           name: "Data Structures",
@@ -95,17 +99,26 @@ export default {
   },
   methods: {},
   created() {},
+  mounted() {
+    this.spinner = false;
+  },
 };
 </script>
 
 <style scoped>
+.spinner {
+  margin-left: 50%;
+  zoom: 200%;
+}
+
 .cardAdd {
-  margin-top: 2%;
+  margin-top: 3%;
   margin-bottom: 2%;
   height: 8rem;
-  width: 100% !important;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
+  width: 20% !important;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 15px 25px,
     rgba(0, 0, 0, 0.05) 0px 5px 10px;
+  border-radius: 2rem;
   display: flex;
   flex-direction: row;
   align-items: center;

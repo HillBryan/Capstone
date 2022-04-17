@@ -1,10 +1,13 @@
 <template>
   <div class="container">
-    <div class="header">
+    <div v-if="spinner" class="spinner-border spinner" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div v-if="!spinner" class="header">
       <h1 class="text-center mt-2">Submissions</h1>
       <hr />
     </div>
-    <div class="body">
+    <div v-if="!spinner" class="body">
       <table class="styled-table">
         <thead>
           <tr>
@@ -21,9 +24,11 @@
             v-for="submission in submissions"
             :key="submission._id"
           >
-            <td><span class="a" @click="routeSubmission(submission._id)">{{
+            <td>
+              <span class="a" @click="routeSubmission(submission._id)">{{
                 submission._id
-              }}</span></td>
+              }}</span>
+            </td>
             <td>
               <span class="a" @click="routeProblem(submission.problem_id)">{{
                 submission.problem_name
@@ -49,6 +54,7 @@ export default {
   components: {},
   data() {
     return {
+      spinner: true,
       submissions: [],
     };
   },
@@ -84,6 +90,7 @@ export default {
     this.postData("http://localhost:3013/rest/submission/all", "POST", {}).then(
       (data) => {
         this.submissions = data;
+        this.spinner = false;
       }
     );
   },
@@ -91,11 +98,16 @@ export default {
 </script>
 
 <style scoped>
+.spinner {
+  margin-left: 50%;
+  zoom: 200%;
+}
 .styled-table {
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
   font-family: sans-serif;
+  font-size: 1.1rem;
   width: 100%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }

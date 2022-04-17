@@ -21,7 +21,14 @@
           <router-link class="nav-link" to="/classes">Classes</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/submissions">Submissions</router-link>
+          <router-link class="nav-link" to="/submissions"
+            >Submissions</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/createClass"
+            >Create Class</router-link
+          >
         </li>
       </ul>
       <ul class="navbar-nav">

@@ -25,7 +25,15 @@ const submissionSchema = new mongoose.Schema(
     passed: {
       type: Number,
       required: false
-    }
+    },
+    total: {
+      type: Number,
+      required: false
+    },
+    problem_name: {
+      type: String,
+      required: false
+    },
   },   
   { 
     timestamps: true 

@@ -18,10 +18,10 @@
           <router-link class="nav-link" to="/">Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/about">About</router-link>
+          <router-link class="nav-link" to="/classes">Classes</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/classes">Classes</router-link>
+          <router-link class="nav-link" to="/submissions">Submissions</router-link>
         </li>
       </ul>
       <ul class="navbar-nav">
@@ -40,9 +40,7 @@ export default {
 </script>
 
 <style scoped>
-
 .nav-item {
   text-align: center;
 }
-
 </style>

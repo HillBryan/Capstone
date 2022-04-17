@@ -6,24 +6,75 @@
     <hr />
     <div class="Courses">
       <card v-for="course in courses" :key="course.id" :course="course"></card>
-      <div class="cardAdd" @click="showModal = !showModal">
-        <h1 class="text-center m-auto">Add Class</h1>
+      <div class="cardAdd" @click="show = true">
+        <h1 class="text-center m-auto">Add Class <span>&#10753;</span></h1>
       </div>
     </div>
-    <modal v-if="showModal"></modal>
+    <div v-if="show">
+      <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Enter Class Code to Add Class</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true" @click="show = false"
+                      >&times;</span
+                    >
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Enter Class Code:</p>
+                  <div class="modalInput">
+                    <input
+                      type="text"
+                      class="form-control classInput"
+                      id="mainClassInput"
+                      placeholder="Class Code..."
+                      v-model="classCode"
+                    />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="show = false"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="show = false"
+                  >
+                    Add Class
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
 <script>
 import card from "../components/classCard.vue";
-import modal from "../components/modal.vue"
 
 export default {
   name: "Classes",
-  components: { card, modal },
+  components: { card },
   data: function () {
     return {
-      showModal: false,
+      show: false,
       courses: [
         {
           name: "Data Structures",
@@ -42,9 +93,7 @@ export default {
       ],
     };
   },
-  methods: {
-
-  },
+  methods: {},
   created() {},
 };
 </script>
@@ -66,5 +115,22 @@ export default {
 .cardAdd:hover {
   transform: scale(1.05);
   cursor: pointer;
+}
+
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
 }
 </style>

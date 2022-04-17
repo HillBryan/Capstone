@@ -6,14 +6,6 @@
     </div>
     <div class="code">
       <h5>Your Submission:</h5>
-      <!-- <textarea
-        class="form-control"
-        rows="10"
-        cols="100"
-        placeholder="Enter code here..."
-        v-model="this.submission.submissionText"
-        disabled
-      ></textarea> -->
       <CodeMirror
         :height="null"
         :width="18"

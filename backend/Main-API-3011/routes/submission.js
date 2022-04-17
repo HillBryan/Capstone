@@ -6,7 +6,7 @@ const Submission = require("../model/submissionModel.js");
 const TestCase = require("../model/testcaseModel.js");
 
 //Getting all submissions
-router.get("/", async (req, res) => {
+router.post("/all", async (req, res) => {
   try {
     const submission = await Submission.find();
     res.status(200).json(submission);

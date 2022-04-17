@@ -61,6 +61,7 @@ export default {
           className: this.className,
           user_id: "Bryan",
           problem_id: this.$route.params.id,
+          problem_name: this.problem.title,
         };
         this.postData(
           "http://localhost:3013/rest/submission",

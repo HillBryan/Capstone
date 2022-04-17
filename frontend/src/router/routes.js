@@ -44,7 +44,7 @@ const routes = [
       component: Solve
     },
     {
-      path: '/submissoin/:id',
+      path: '/submission/:id',
       name: 'Submission',
       component: Submission
     },

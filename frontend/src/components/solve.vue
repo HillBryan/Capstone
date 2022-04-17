@@ -5,11 +5,7 @@
       <hr />
     </div>
     <div class="code">
-      <textarea
-        id="input"
-        placeholder="Enter code here..."
-        v-model="code"
-      ></textarea>
+      <CodeMirror :height="null" :width="25" ref="codeMirror"></CodeMirror>
       <hr />
     </div>
     <div class="input">
@@ -37,20 +33,18 @@
 
 <script>
 import ApiMixin from "../mixins/api_mixin";
-import * as CodeMirror from 'codemirror';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/ayu-dark.css';
-import 'codemirror/mode/clike/clike.js'
+import CodeMirror from "./codeMirror.vue";
 
 export default {
   name: "solve",
   mixins: [ApiMixin],
+  components: {
+    CodeMirror,
+  },
   data() {
     return {
       problem: {},
-      code: "",
       className: "",
-      codeMirror: null,
     };
   },
   methods: {
@@ -58,21 +52,25 @@ export default {
       this.$router.go(-1);
     },
     route() {
-        let code = this.codeMirror.getValue();
-        if (!this.className || this.className.includes('.java') || !code) {
-            alert("Class name / code must not be empty and not include .java");
-        } else {
-            let body = {
-                submissionText: code,
-                className: this.className,
-                user_id: 'Bryan',
-                problem_id: this.$route.params.id
-            }
-            this.postData("http://localhost:3013/rest/submission", "POST", body).then((data) => {
-                // Route to submisison page with id
-                this.$router.push({ name: 'Submission', params: { id: data.id } })
-            });
-        }
+      let code = this.$refs.codeMirror.getCode();
+      if (!this.className || this.className.includes(".java") || !code) {
+        alert("Class name / code must not be empty and not include .java");
+      } else {
+        let body = {
+          submissionText: code,
+          className: this.className,
+          user_id: "Bryan",
+          problem_id: this.$route.params.id,
+        };
+        this.postData(
+          "http://localhost:3013/rest/submission",
+          "POST",
+          body
+        ).then((data) => {
+          // Route to submisison page with id
+          this.$router.push({ name: "Submission", params: { id: data.id } });
+        });
+      }
     },
   },
   mounted() {
@@ -81,36 +79,25 @@ export default {
     }).then((data) => {
       this.problem = data[0];
     });
-
-    this.codeMirror = CodeMirror.fromTextArea(document.getElementById('input'), {
-      lineNumbers: true,
-      theme: 'ayu-dark',
-      mode: 'text/x-java',
-      matchBrackets: true,
-      autoCloseBrackets: true,
-    });
-
-    this.codeMirror.setSize(null, '25rem')
   },
 };
 </script>
 
 <style scoped>
-
 .input {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .textInput {
-    display:flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .enterText {
-    width: 70%;
+  width: 70%;
 }
 
 .btn {

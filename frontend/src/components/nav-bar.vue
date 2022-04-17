@@ -26,8 +26,13 @@
           >
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/createClass"
+          <router-link class="nav-link" to="/create/class"
             >Create Class</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/create/problem"
+            >Create Problem</router-link
           >
         </li>
       </ul>

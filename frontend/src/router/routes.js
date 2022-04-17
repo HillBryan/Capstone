@@ -1,10 +1,11 @@
 import Home from "../views/Home";
 import About from "../views/About";
 import Classes from "../views/Classes";
-import CreateClass from "../views/CreateClass.vue"
+import CreateClass from "../views/CreateClass.vue";
 import Login from "../views/Login";
 import Problems from "../views/Problems";
 import Problem from "../components/Problem";
+import CreateProblem from "../views/CreateProblem.vue";
 import Solve from "../components/solve.vue";
 import Submission from "../components/submission.vue";
 import Submissions from "../views/Submissions.vue";
@@ -26,7 +27,7 @@ const routes = [
     component: Classes,
   },
   {
-    path: "/createClass",
+    path: "/create/class",
     name: "createClass",
     component: CreateClass,
   },
@@ -49,6 +50,11 @@ const routes = [
     path: "/problem/:id/solve",
     name: "Solve",
     component: Solve,
+  },
+  {
+    path: "/create/problem",
+    name: "CreateProblem",
+    component: CreateProblem,
   },
   {
     path: "/submission/:id",

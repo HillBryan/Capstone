@@ -67,7 +67,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    @click="show = false"
+                    @click="addCourse()"
                   >
                     Add Class
                   </button>
@@ -96,24 +96,7 @@ export default {
       spinner: true,
       classCode: "",
       user_account: {},
-      courses: [
-        // {
-        //   name: "Data Structures",
-        //   id: 100,
-        //   instructor: "Dr. Mohan",
-        //   course_code: "CS 3460",
-        //   grade: "100",
-        //   course_secret: 'AK6F'
-        // },
-        // {
-        //   name: "Algorithms",
-        //   id: 101,
-        //   instructor: "Dr. Mohan",
-        //   course_code: "CS 3450",
-        //   grade: "91.2",
-        //   course_secret: 'MEK9'
-        // },
-      ],
+      courses: [],
     };
   },
   computed: {
@@ -123,12 +106,22 @@ export default {
     route() {
       this.$router.push({ name: "createClass", params: {} });
     },
-  },
-  created() {
-    this.user_account = this.account;
-  },
-  mounted() {
-    this.postData("http://localhost:3013/rest/user/findCourses/", "POST", {
+    addCourse() {
+      if (this.classCode) {
+        this.postData("http://localhost:3013/rest/class/code/", "POST", {
+          course_secret: this.classCode,
+        }).then((data) => {
+          this.postData("http://localhost:3013/rest/user/", "POST", {
+            account_id: this.account._id,
+            course_id: data[0]._id,
+          }).then(() => {
+            this.loadCourses();
+          });
+        });
+      }
+    },
+    loadCourses() {
+      this.postData("http://localhost:3013/rest/user/findCourses/", "POST", {
       account_id: this.user_account._id,
     })
       .then((data) => {
@@ -136,7 +129,7 @@ export default {
         data.forEach((user) => {
           courseIds.push(user.course_id);
         });
-        return courseIds
+        return courseIds;
       })
       .then((courseIds) => {
         this.postData("http://localhost:3013/rest/class/all/", "POST", {}).then(
@@ -147,9 +140,17 @@ export default {
             });
             this.courses = courses;
             this.spinner = false;
+            this.show = false;
           }
         );
       });
+    }
+  },
+  created() {
+    this.user_account = this.account;
+  },
+  mounted() {
+    this.loadCourses();
   },
 };
 </script>

@@ -47,6 +47,7 @@
 
 <script>
 import ApiMixin from "../mixins/api_mixin";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Submissions",
@@ -82,12 +83,15 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["account"]),
     getProblemLink(problem_id) {
       return "http://localhost:8080/problem/" + problem_id;
     },
   },
   mounted() {
-    this.postData("http://localhost:3013/rest/submission/all", "POST", {}).then(
+    this.postData("http://localhost:3013/rest/submission/user", "POST", {
+      user_id: this.account._id,
+    }).then(
       (data) => {
         this.submissions = data;
         this.spinner = false;

@@ -17,17 +17,17 @@
           </div>
           <hr />
         </div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-around">
           <button
             type="button"
-            class="btn btn-secondary mr-5"
+            class="btn btn-secondary"
             @click="show = true"
           >
             Login
           </button>
           <button
             type="button"
-            class="btn btn-primary ml-5"
+            class="btn btn-primary"
             @click="show = true"
           >
             Register

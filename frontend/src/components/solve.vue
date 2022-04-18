@@ -34,6 +34,7 @@
 <script>
 import ApiMixin from "../mixins/api_mixin";
 import CodeMirror from "./codeMirror.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "solve",
@@ -59,7 +60,7 @@ export default {
         let body = {
           submissionText: code,
           className: this.className,
-          user_id: "Bryan",
+          user_id: this.account._id,
           problem_id: this.$route.params.id,
           problem_name: this.problem.title,
         };
@@ -73,6 +74,9 @@ export default {
         });
       }
     },
+  },
+  computed: {
+    ...mapGetters(["account"]),
   },
   mounted() {
     this.postData("http://localhost:3013/rest/problem/id/", "POST", {

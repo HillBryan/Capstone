@@ -28,6 +28,19 @@ router.post('/creator/', async (req, res) => {
   }
 });
 
+router.post('/code/', async (req, res) => {
+  try {
+    const classes = await Class.find({
+      course_secret: req.body.course_secret,
+    });
+    res.status(200).json(classes);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
 router.post('/id/', async (req, res) => {
   try {
     const classes = await Class.find({

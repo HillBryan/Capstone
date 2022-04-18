@@ -31,6 +31,19 @@ router.post("/id/", async (req, res) => {
   }
 });
 
+router.post("/user/", async (req, res) => {
+  try {
+    const submission = await Submission.find({
+      user_id: req.body.user_id,
+    });
+    res.status(200).json(submission);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
 //Solving submission
 router.post("/solve/", async (req, res) => {
   try {

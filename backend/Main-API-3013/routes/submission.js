@@ -44,6 +44,19 @@ router.post("/user/", async (req, res) => {
   }
 });
 
+router.post("/problem/", async (req, res) => {
+  try {
+    const submission = await Submission.find({
+      problem_id: req.body.problem_id,
+    });
+    res.status(200).json(submission);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
 //Solving submission
 router.post("/solve/", async (req, res) => {
   try {
@@ -71,7 +84,7 @@ router.post("/solve/", async (req, res) => {
             if (error || stdOut || stdErr) {
               Submission.updateOne(
                 { _id: submission._id }, // Filter
-                { $set: { status: "Compile Error", total: testcases.length, } } // Update
+                { $set: { status: "Compile Error", total: testcases.length } } // Update
               ).then(
                 res.status(200).json({
                   status: "Compile Error",
@@ -109,7 +122,12 @@ router.post("/solve/", async (req, res) => {
                             valid = false;
                             Submission.updateOne(
                               { _id: submission._id }, // Filter
-                              { $set: { status: "Run Time Error", total: testcases.length, } } // Update
+                              {
+                                $set: {
+                                  status: "Run Time Error",
+                                  total: testcases.length,
+                                },
+                              } // Update
                             ).then(
                               res.status(200).json({
                                 status: "Run Time Error",

@@ -52,7 +52,7 @@ const routes = [
     component: Solve,
   },
   {
-    path: "/create/problem",
+    path: "/create/problem/:class",
     name: "CreateProblem",
     component: CreateProblem,
   },

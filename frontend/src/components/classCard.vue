@@ -18,6 +18,7 @@ export default {
   name: "card",
   props: {
     course: Object,
+    enrolled: Boolean,
   },
   data() {
     return {};

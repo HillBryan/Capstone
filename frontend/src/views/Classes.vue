@@ -20,9 +20,28 @@
     </div>
     <hr />
     <div v-if="!spinner" class="Courses">
-      <card v-for="course in courses" :key="course.id" :course="course"></card>
-      <div class="cardAdd ml-auto mr-auto" @click="show = true">
-        <h4 class="text-center m-auto">Add Course <span>&#10753;</span></h4>
+      <div v-if="created">
+        <h3>Created</h3>
+        <card
+          v-for="course in created"
+          :key="course.id"
+          :course="course"
+          :enrolled="false"
+        ></card>
+        <hr />
+      </div>
+      <div v-if="enrolled">
+        <h3>Enrolled</h3>
+        <card
+          v-for="course in enrolled"
+          :key="course.id"
+          :course="course"
+          :enrolled="true"
+        ></card>
+        <div class="cardAdd ml-auto mr-auto" @click="show = true">
+          <h4 class="text-center m-auto">Add Course <span>&#10753;</span></h4>
+        </div>
+        <hr />
       </div>
     </div>
     <div v-if="show">
@@ -96,7 +115,8 @@ export default {
       spinner: true,
       classCode: "",
       user_account: {},
-      courses: [],
+      enrolled: [],
+      created: [],
     };
   },
   computed: {
@@ -122,29 +142,35 @@ export default {
     },
     loadCourses() {
       this.postData("http://localhost:3013/rest/user/findCourses/", "POST", {
-      account_id: this.user_account._id,
-    })
-      .then((data) => {
-        let courseIds = [];
-        data.forEach((user) => {
-          courseIds.push(user.course_id);
-        });
-        return courseIds;
+        account_id: this.user_account._id,
       })
-      .then((courseIds) => {
-        this.postData("http://localhost:3013/rest/class/all/", "POST", {}).then(
-          (data) => {
-            let courses = [];
+        .then((data) => {
+          let courseIds = [];
+          data.forEach((user) => {
+            courseIds.push(user.course_id);
+          });
+          return courseIds;
+        })
+        .then((courseIds) => {
+          this.postData(
+            "http://localhost:3013/rest/class/all/",
+            "POST",
+            {}
+          ).then((data) => {
+            this.enrolled = [];
+            this.created = [];
             data.forEach((course) => {
-              if (courseIds.includes(course._id)) courses.push(course);
+              if (courseIds.includes(course._id)) {
+                this.enrolled.push(course);
+              } else if (this.account._id === course.creator_id) {
+                this.created.push(course);
+              }
             });
-            this.courses = courses;
             this.spinner = false;
             this.show = false;
-          }
-        );
-      });
-    }
+          });
+        });
+    },
   },
   created() {
     this.user_account = this.account;

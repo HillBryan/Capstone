@@ -14,25 +14,26 @@ export default {
   name: "test",
   props: {
     problem: Object,
+    enrolled: Boolean,
   },
   data() {
     return {};
   },
   methods: {
     route() {
-        this.$router.push({ name: 'Problem', params: { id: this.problem._id } })
-    }
+      this.$router.push({ name: "Problem", params: { id: this.problem._id } });
+    },
   },
 };
 </script>
 
 <style scoped>
-
 .card {
   margin-top: 2%;
   height: 10rem;
   width: 100% !important;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
+    rgba(0, 0, 0, 0.05) 0px 5px 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -43,5 +44,4 @@ export default {
   transform: scale(1.05);
   cursor: pointer;
 }
-
 </style>

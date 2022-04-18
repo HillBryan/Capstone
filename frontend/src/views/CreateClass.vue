@@ -74,14 +74,8 @@ export default {
         instructor: this.courseInstructor,
         creator_id: this.account._id,
         course_secret: secret,
-      }).then((data) => {
-        console.log(data);
-        this.postData("http://localhost:3013/rest/user/", "POST", {
-          account_id: this.account._id,
-          course_id: data._id,
-        }).then(() => {
-          this.goBack();
-        });
+      }).then(() => {
+        this.goBack();
       });
     },
     makeid(length) {

@@ -3,10 +3,18 @@
     <div v-if="spinner" class="spinner-border spinner" role="status">
       <span class="sr-only">Loading...</span>
     </div>
-    <div v-if="!spinner" class="title mt-3">
+    <div v-if="!spinner" class="title mt-3 flex-row">
       <h1>{{ this.problem.title }}</h1>
-      <hr />
+      <button
+        v-if="!enrolled"
+        type="button"
+        class="btn btn-secondary ml-auto"
+        @click="routeSubmissions()"
+      >
+        See Submissions
+      </button>
     </div>
+    <hr />
     <div v-if="!spinner" class="statement">
       <p>{{ this.problem.statement }}</p>
       <hr />
@@ -49,6 +57,7 @@
 
 <script>
 import ApiMixin from "../mixins/api_mixin";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Problem",
@@ -57,21 +66,29 @@ export default {
     return {
       problem: {},
       spinner: true,
+      enrolled: false,
     };
   },
   methods: {
     goBack() {
       this.$router.go(-1);
     },
+    routeSubmissions() {
+
+    },
     route() {
       this.$router.push({ name: "Solve", params: { id: this.problem._id } });
     },
+  },
+  computed: {
+    ...mapGetters(["account"]),
   },
   mounted() {
     this.postData("http://localhost:3013/rest/problem/id/", "POST", {
       id: this.$route.params.id,
     }).then((data) => {
       this.problem = data[0];
+      this.enrolled = this.account._id !== this.problem.creator_id;
       this.spinner = false;
     });
   },
@@ -101,5 +118,10 @@ export default {
 .spinner {
   margin-left: 50%;
   zoom: 200%;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
 }
 </style>

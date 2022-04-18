@@ -7,7 +7,7 @@
         :example_in="exampleInput"
         :example_out="exampleOutput"
         :preview="preview"
-        @update="preview=$event"
+        @update="preview = $event"
       ></problem-preview>
     </div>
     <div v-if="!preview">
@@ -31,8 +31,18 @@
             type="text"
             class="form-control"
             id="courseNameInput"
-            placeholder="Course Name..."
+            placeholder="Problem Name..."
             v-model="problemTitle"
+          />
+          <hr />
+
+          <h5>Difficulty:</h5>
+          <input
+            type="text"
+            class="form-control"
+            id="courseDifficultyInput"
+            placeholder="Difficulty..."
+            v-model="difficulty"
           />
           <hr />
 
@@ -125,14 +135,18 @@
 
 <script>
 import ProblemPreview from "./ProblemPreview.vue";
+import ApiMixin from "../mixins/api_mixin";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CreateProblem",
   components: { ProblemPreview },
+  mixins: [ApiMixin],
   data() {
     return {
       preview: false,
       problemTitle: "",
+      difficulty: "",
       problemDescription: "",
       exampleInput: "",
       exampleOutput: "",
@@ -144,6 +158,9 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters(["account"]),
+  },
   methods: {
     addTestCase() {
       this.testCases.push({ input: "", output: "" });
@@ -151,7 +168,29 @@ export default {
     removeTestCase(index) {
       this.testCases.splice(index, 1);
     },
-    route() {},
+    route() {
+      // Create problem
+      this.postData("http://localhost:3013/rest/problem/", "POST", {
+        title: this.problemTitle,
+        statement: this.problemDescription,
+        example_in: this.exampleInput,
+        example_out: this.exampleOutput,
+        difficulty: this.difficulty,
+        class_id: this.$route.params.class,
+        creator_id: this.account._id,
+      }).then((data) => {
+        this.testCases.forEach((testcase) => {
+          this.postData("http://localhost:3013/rest/testcase/", "POST", {
+            input: testcase.input,
+            output: testcase.output,
+            problem_id: data._id,
+          }).then((data) => {
+            console.log(data);
+          });
+        });
+        this.goBack();
+      });
+    },
     goBack() {
       this.$router.go(-1);
     },

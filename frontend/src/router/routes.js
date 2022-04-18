@@ -9,6 +9,7 @@ import CreateProblem from "../views/CreateProblem.vue";
 import Solve from "../components/solve.vue";
 import Submission from "../components/submission.vue";
 import Submissions from "../views/Submissions.vue";
+import SubmissionProblem from "../views/SubmissionsClass.vue";
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
     path: "/submissions",
     name: "Submissions",
     component: Submissions,
+  },
+  {
+    path: "/:id/submissions",
+    name: "SubmissionProblem",
+    component: SubmissionProblem,
   },
 ];
 

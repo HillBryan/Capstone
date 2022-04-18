@@ -27,8 +27,8 @@
             >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/create/problem"
-              >Create Problem</router-link
+            <router-link class="nav-link" to="/1/submissions"
+              >Problem Submission</router-link
             >
           </li>
         </ul>

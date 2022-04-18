@@ -29,6 +29,19 @@ router.post('/find/', async (req, res) => {
   }
 });
 
+router.post('/id/', async (req, res) => {
+  try {
+    const accounts = await Account.find({
+      _id: req.body._id,
+    });
+    res.status(200).json(accounts);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
 //Creating account
 router.post('/', async (req, res) => {
   const account = new Account({

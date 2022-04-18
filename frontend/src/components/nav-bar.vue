@@ -118,6 +118,11 @@ export default {
       invalid: false,
     };
   },
+  mounted() {
+    this.$root.$on('login', data => {
+        this.account = data;
+    });
+  },
   methods: {
     ...mapActions(["setAccount"]),
     exit() {

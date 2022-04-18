@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     route() {
-      this.$router.push({ name: 'Problems', params: { class: this.course.id } })
+      this.$router.push({ name: 'Problems', params: { class: this.course._id } })
     },
     getLetter() {
       if (!this.course.grade) return 'A';

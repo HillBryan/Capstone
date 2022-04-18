@@ -83,43 +83,73 @@
 
 <script>
 import card from "../components/classCard.vue";
+import ApiMixin from "../mixins/api_mixin";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Classes",
   components: { card },
+  mixins: [ApiMixin],
   data: function () {
     return {
       show: false,
       spinner: true,
-      classCode: '',
+      classCode: "",
+      user_account: {},
       courses: [
-        {
-          name: "Data Structures",
-          id: 100,
-          instructor: "Dr. Mohan",
-          course_code: "CS 3460",
-          grade: "100",
-          course_secret: 'AK6F'
-        },
-        {
-          name: "Algorithms",
-          id: 101,
-          instructor: "Dr. Mohan",
-          course_code: "CS 3450",
-          grade: "91.2",
-          course_secret: 'MEK9'
-        },
+        // {
+        //   name: "Data Structures",
+        //   id: 100,
+        //   instructor: "Dr. Mohan",
+        //   course_code: "CS 3460",
+        //   grade: "100",
+        //   course_secret: 'AK6F'
+        // },
+        // {
+        //   name: "Algorithms",
+        //   id: 101,
+        //   instructor: "Dr. Mohan",
+        //   course_code: "CS 3450",
+        //   grade: "91.2",
+        //   course_secret: 'MEK9'
+        // },
       ],
     };
   },
+  computed: {
+    ...mapGetters(["account"]),
+  },
   methods: {
     route() {
-      this.$router.push({ name: "createClass", params: {  } });
+      this.$router.push({ name: "createClass", params: {} });
     },
   },
-  created() {},
+  created() {
+    this.user_account = this.account;
+  },
   mounted() {
-    this.spinner = false;
+    this.postData("http://localhost:3013/rest/user/findCourses/", "POST", {
+      account_id: this.user_account._id,
+    })
+      .then((data) => {
+        let courseIds = [];
+        data.forEach((user) => {
+          courseIds.push(user.course_id);
+        });
+        return courseIds
+      })
+      .then((courseIds) => {
+        this.postData("http://localhost:3013/rest/class/all/", "POST", {}).then(
+          (data) => {
+            let courses = [];
+            data.forEach((course) => {
+              if (courseIds.includes(course._id)) courses.push(course);
+            });
+            this.courses = courses;
+            this.spinner = false;
+          }
+        );
+      });
   },
 };
 </script>

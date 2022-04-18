@@ -135,11 +135,7 @@ export default {
         console.log(data);
         if (data.length > 0) {
           this.account = data[0];
-          this.setAccount({
-            name: this.account.name,
-            email: this.email,
-            password: this.password,
-          });
+          this.setAccount(data[0]);
           this.show = false;
           this.invalid = false;
         } else {

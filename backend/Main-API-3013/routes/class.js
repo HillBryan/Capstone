@@ -28,6 +28,19 @@ router.post('/creator/', async (req, res) => {
   }
 });
 
+router.post('/id/', async (req, res) => {
+  try {
+    const classes = await Class.find({
+      _id: req.body.class_id
+    });
+    res.status(200).json(classes);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
 //Creating account
 router.post('/', async (req, res) => {
   const classN = new Class({

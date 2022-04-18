@@ -1,9 +1,5 @@
 const state = {
-  account: {
-    name: '',
-    email: '',
-    password: '',
-  },
+  account: {},
 };
 
 const getters = {

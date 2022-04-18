@@ -3,12 +3,12 @@
     <div class="card-info ml-2">
       <h2>{{ this.course.name }}</h2>
       <h5>{{ this.course.instructor }}</h5>
-      <span>{{ this.course.course_code }}</span><br>
+      <span>{{ this.course.code }}</span><br>
       <span>Code: {{ this.course.course_secret }}</span>
     </div>
     <div class="card-grade ml-auto mr-2">
       <h3 class="text-center">{{ getLetter() }}</h3>
-      <h3>{{ this.course.grade }}%</h3>
+      <h3>{{ getPercentage() }}%</h3>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default {
       this.$router.push({ name: 'Problems', params: { class: this.course.id } })
     },
     getLetter() {
+      if (!this.course.grade) return 'A';
       if (this.course.grade >= 93) return "A";
       if (this.course.grade >= 90) return "A-";
       if (this.course.grade >= 87) return "B+";
@@ -39,6 +40,9 @@ export default {
       if (this.course.grade >= 65) return "D";
       if (this.course.grade >= 60) return "D-";
       return "F";
+    },
+    getPercentage() {
+      return this.course.grade ? this.course.grade : 100;
     },
   },
 };

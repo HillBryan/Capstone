@@ -18,17 +18,12 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/">Home</router-link>
           </li>
-          <li class="nav-item">
+          <li v-if="!isEmpty()" class="nav-item">
             <router-link class="nav-link" to="/classes">Classes</router-link>
           </li>
-          <li class="nav-item">
+          <li v-if="!isEmpty()" class="nav-item">
             <router-link class="nav-link" to="/submissions"
               >Submissions</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/1/submissions"
-              >Problem Submission</router-link
             >
           </li>
         </ul>
@@ -119,8 +114,8 @@ export default {
     };
   },
   mounted() {
-    this.$root.$on('login', data => {
-        this.account = data;
+    this.$root.$on("login", (data) => {
+      this.account = data;
     });
   },
   methods: {
@@ -131,6 +126,9 @@ export default {
     },
     getText() {
       return this.account.name ? this.account.name : "Login";
+    },
+    isEmpty() {
+      return Object.keys(this.account).length === 0;
     },
     findAccount() {
       this.postData("http://localhost:3013/rest/account/find/", "POST", {

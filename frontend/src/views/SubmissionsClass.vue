@@ -94,21 +94,15 @@ export default {
     },
   },
   mounted() {
-    this.postData("http://localhost:3013/rest/submission/user", "POST", {
-      user_id: this.account._id,
+    this.postData("http://localhost:3013/rest/submission/problem", "POST", {
+      problem_id: this.$route.params.id,
     }).then((data) => {
-      let temp = [];
-      data.forEach((submission) => {
-        if (submission.problem_id === this.$route.params.id) {
-          temp.push(submission);
-        }
-      });
-      this.submissions = temp;
+      this.submissions = data;
       this.submissions.forEach((submission) => {
         this.postData("http://localhost:3013/rest/account/id", "POST", {
           _id: submission.user_id,
         }).then((data) => {
-          this.userNames.push(data[0].name)
+          this.userNames.unshift(data[0].name);
         });
       });
     });

@@ -20,7 +20,7 @@
     </div>
     <hr />
     <div v-if="!spinner" class="Courses">
-      <div v-if="created">
+      <div v-if="created.length > 0">
         <h3>Created</h3>
         <card
           v-for="course in created"
@@ -30,7 +30,7 @@
         ></card>
         <hr />
       </div>
-      <div v-if="enrolled">
+      <div v-if="enrolled.length > 0">
         <h3>Enrolled</h3>
         <card
           v-for="course in enrolled"
@@ -162,7 +162,8 @@ export default {
             data.forEach((course) => {
               if (courseIds.includes(course._id)) {
                 this.enrolled.push(course);
-              } else if (this.account._id === course.creator_id) {
+              }
+              if (this.account._id === course.creator_id) {
                 this.created.push(course);
               }
             });

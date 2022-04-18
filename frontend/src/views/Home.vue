@@ -11,23 +11,18 @@
             Code Judging & Submission System
           </h1>
           <hr />
-          <div class="row">
-            <h3 class="m-auto">Course / Problem Creation</h3>
-            <h3 class="m-auto">Auto Grading</h3>
-          </div>
-          <hr />
         </div>
-        <div class="row justify-content-around">
+        <div class="row justify-content-center">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-secondary mr-3"
             @click="show = true"
           >
             Login
           </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-primary ml-3"
             @click="show = true"
           >
             Register

@@ -1,105 +1,137 @@
 <template>
-  <div class="container">
-    <div class="header text-center mt-2">
-      <h1>Create Problem</h1>
-      <hr />
+  <div>
+    <div v-if="preview">
+      <problem-preview
+        :title="problemTitle"
+        :statement="problemDescription"
+        :example_in="exampleInput"
+        :example_out="exampleOutput"
+        :preview="preview"
+        @update="preview=$event"
+      ></problem-preview>
     </div>
-    <div class="code">
-      <h5>Problem Title:</h5>
-      <input
-        type="text"
-        class="form-control"
-        id="courseNameInput"
-        placeholder="Course Name..."
-        v-model="problemTitle"
-      />
-      <hr />
+    <div v-if="!preview">
+      <div class="container">
+        <div class="topRow mt-2">
+          <h1 class="ml-auto">Create Problem</h1>
+          <button
+            type="button"
+            class="btn btn-secondary ml-auto"
+            @click="preview = true"
+          >
+            Preview
+          </button>
+        </div>
 
-      <h5>Problem Description:</h5>
-      <textarea
-        class="form-control"
-        rows="6"
-        cols="100"
-        v-model="problemDescription"
-      ></textarea>
-      <hr />
+        <hr />
 
-      <h5>Example Input:</h5>
-      <textarea
-        class="form-control"
-        rows="6"
-        cols="100"
-        v-model="exampleInput"
-      ></textarea>
-      <hr />
+        <div class="code">
+          <h5>Problem Title:</h5>
+          <input
+            type="text"
+            class="form-control"
+            id="courseNameInput"
+            placeholder="Course Name..."
+            v-model="problemTitle"
+          />
+          <hr />
 
-      <h5>Example Output:</h5>
-      <textarea
-        class="form-control"
-        rows="6"
-        cols="100"
-        v-model="exampleOutput"
-      ></textarea>
-      <hr />
+          <h5>Problem Description:</h5>
+          <textarea
+            class="form-control"
+            rows="6"
+            cols="100"
+            v-model="problemDescription"
+          ></textarea>
+          <hr />
 
-      <h2>Testcase Input</h2>
-
-      <hr />
-      <div
-        v-for="(testcase, counter) in testCases"
-        :key="counter"
-        class="inputOutput"
-      >
-        <div class="mb-3">
           <h5>Example Input:</h5>
           <textarea
             class="form-control"
             rows="6"
             cols="100"
-            v-model="testcase.input"
+            v-model="exampleInput"
           ></textarea>
-        </div>
-        <div class="example">
+          <hr />
+
           <h5>Example Output:</h5>
           <textarea
             class="form-control"
             rows="6"
             cols="100"
-            v-model="testcase.output"
+            v-model="exampleOutput"
           ></textarea>
+          <hr />
+
+          <h2>Testcase Input</h2>
+
+          <hr />
+          <div
+            v-for="(testcase, counter) in testCases"
+            :key="counter"
+            class="inputOutput"
+          >
+            <div class="mb-3">
+              <h5>Example Input:</h5>
+              <textarea
+                class="form-control"
+                rows="6"
+                cols="100"
+                v-model="testcase.input"
+              ></textarea>
+            </div>
+            <div class="example">
+              <h5>Example Output:</h5>
+              <textarea
+                class="form-control"
+                rows="6"
+                cols="100"
+                v-model="testcase.output"
+              ></textarea>
+            </div>
+            <h5>
+              <span class="delete" @click="removeTestCase(counter)"
+                >&#10006;</span
+              >
+            </h5>
+          </div>
+
+          <div class="cardAdd ml-auto mr-auto" @click="addTestCase">
+            <h5 class="text-center m-auto sizing">
+              Add Testcase <span>&#10753;</span>
+            </h5>
+          </div>
+
+          <hr />
+
+          <div class="buttons-wrapper mb-3">
+            <button
+              type="button"
+              class="btn btn-secondary mr-2"
+              @click="goBack()"
+            >
+              Back
+            </button>
+            <button type="button" class="btn btn-primary mr-0" @click="route()">
+              Create
+            </button>
+          </div>
         </div>
-        <h5>
-          <span class="delete" @click="removeTestCase(counter)">&#10006;</span>
-        </h5>
-      </div>
-
-      <div class="cardAdd ml-auto mr-auto" @click="addTestCase">
-        <h5 class="text-center m-auto sizing">
-          Add Testcase <span>&#10753;</span>
-        </h5>
-      </div>
-
-      <hr />
-
-      <div class="buttons-wrapper">
-        <button type="button" class="btn btn-secondary mr-2" @click="goBack()">
-          Back
-        </button>
-        <button type="button" class="btn btn-primary mr-0" @click="route()">
-          Create
-        </button>
+        <div class="grading"></div>
       </div>
     </div>
-    <div class="grading"></div>
   </div>
 </template>
 
 <script>
+import ProblemPreview from "./ProblemPreview.vue";
+
 export default {
   name: "CreateProblem",
-  components: {},
+  components: { ProblemPreview },
   data() {
     return {
+      preview: false,
       problemTitle: "",
       problemDescription: "",
       exampleInput: "",
@@ -164,6 +196,15 @@ export default {
 
 .example {
   margin-left: 5%;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.center {
+  justify-content: center;
 }
 
 .delete:hover {

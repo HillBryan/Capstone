@@ -1,17 +1,28 @@
-import { createStore } from "vuex";
+import Vuex from "vuex";
+import Vue from "vue";
+Vue.use(Vuex);
 
-export default createStore({
-  state: {
-    account: {},
+const state = {
+  account: {},
+};
+
+const getters = {
+  account: (state) => state.account,
+};
+
+const actions = {
+  async setAccount({ commit }, account) {
+    commit("setAccount", account);
   },
-  mutations: {
-    UPDATE_ACCOUNT(state, account) {
-      state.account = account;
-    },
-  },
-  actions: {
-    login(context, payload) {
-      context.commit("UPDATE_ACCOUNT", payload);
-    },
-  },
-});
+};
+
+const mutations = {
+  setAccount: (state, account) => (state.account = account),
+};
+
+export default {
+  state,
+  getters,
+  actions,
+  mutations,
+};

@@ -22,11 +22,11 @@
         <tbody>
           <tr
             class="m-row"
-            v-for="submission in submissions"
+            v-for="(submission,index) in submissions"
             :key="submission._id"
           >
             <td>
-              <span>{{ submission.userName }}</span>
+              <span>{{ userNames[index] }}</span>
             </td>
             <td>
               <span class="a" @click="routeSubmission(submission._id)">{{
@@ -61,6 +61,7 @@ export default {
     return {
       spinner: true,
       submissions: [],
+      userNames: [],
     };
   },
   methods: {
@@ -96,19 +97,22 @@ export default {
     this.postData("http://localhost:3013/rest/submission/user", "POST", {
       user_id: this.account._id,
     }).then((data) => {
-      // Need to filter for problem_id :)
-      this.submissions = data;
+      let temp = [];
+      data.forEach((submission) => {
+        if (submission.problem_id === this.$route.params.id) {
+          temp.push(submission);
+        }
+      });
+      this.submissions = temp;
       this.submissions.forEach((submission) => {
         this.postData("http://localhost:3013/rest/account/id", "POST", {
           _id: submission.user_id,
         }).then((data) => {
-          if (data.length == 1) {
-            submission.userName = data[0].name;
-            this.spinner = false;
-          }
+          this.userNames.push(data[0].name)
         });
       });
     });
+    this.spinner = false;
   },
 };
 </script>

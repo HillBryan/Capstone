@@ -74,7 +74,7 @@ export default {
       this.$router.go(-1);
     },
     routeSubmissions() {
-
+      this.$router.push({ name: "SubmissionProblem", params: { id: this.problem._id } });
     },
     route() {
       this.$router.push({ name: "Solve", params: { id: this.problem._id } });

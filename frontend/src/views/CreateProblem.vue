@@ -12,7 +12,7 @@
     </div>
     <div v-if="!preview">
       <div class="container">
-        <div class="topRow mt-2">
+        <div class="topRow mt-3">
           <h1 class="ml-auto">Create Problem</h1>
           <button
             type="button"
@@ -167,7 +167,7 @@ export default {
   width: 12vw !important;
   box-shadow: rgba(0, 0, 0, 0.45) 0px 15px 25px,
     rgba(0, 0, 0, 0.05) 0px 5px 10px;
-  border-radius: 2rem;
+  border-radius: 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;

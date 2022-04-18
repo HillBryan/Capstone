@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="header text-center mt-2">
-      <h1>Create Class</h1>
+      <h1>Create Course</h1>
       <hr />
     </div>
     <div class="code">

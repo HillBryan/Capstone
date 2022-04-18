@@ -1,28 +1,19 @@
-import Vuex from "vuex";
-import Vue from "vue";
-Vue.use(Vuex);
-
-const state = {
-  account: {},
-};
-
-const getters = {
-  account: (state) => state.account,
-};
-
-const actions = {
-  async setAccount({ commit }, account) {
-    commit("setAccount", account);
+import Vue from 'vue'
+import Vuex from 'vuex'
+import accountModule from './accountModule'
+Vue.use(Vuex)
+let store = new Vuex.Store({
+  state: {
   },
-};
+  mutations: {
+  },
+  actions: {
+  },
+  modules: {
+    accountModule
+  }
+});
 
-const mutations = {
-  setAccount: (state, account) => (state.account = account),
-};
+Vue.prototype.$store = store;
 
-export default {
-  state,
-  getters,
-  actions,
-  mutations,
-};
+export default store;

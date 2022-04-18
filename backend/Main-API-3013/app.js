@@ -20,11 +20,13 @@ const submissionRoute = require('./routes/submission');
 const testCaseRoute = require('./routes/testcase');
 const problemRoute = require('./routes/problem');
 const classRoute = require('./routes/class');
+const accountRoute = require('./routes/account');
 
 app.use('/rest/submission', submissionRoute);
 app.use('/rest/testcase', testCaseRoute);
 app.use('/rest/problem', problemRoute);
 app.use('/rest/class', classRoute);
+app.use('/rest/account', accountRoute);
 
 //Creating server on port 3000.
 app.listen(3013, () => console.log('Server Started'));

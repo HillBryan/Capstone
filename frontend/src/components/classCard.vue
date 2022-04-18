@@ -3,7 +3,8 @@
     <div class="card-info ml-2">
       <h2>{{ this.course.name }}</h2>
       <h5>{{ this.course.instructor }}</h5>
-      <span>{{ this.course.course_code }}</span>
+      <span>{{ this.course.course_code }}</span><br>
+      <span>Code: {{ this.course.course_secret }}</span>
     </div>
     <div class="card-grade ml-auto mr-2">
       <h3 class="text-center">{{ getLetter() }}</h3>

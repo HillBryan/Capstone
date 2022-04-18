@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Class = require('../model/classModel.js');
+const Account = require('../model/accountModel.js');
 
 //Getting all problems
 router.post('/all', async (req, res) => {
   try {
-    const classes = await Class.find();
+    const accounts = await Account.find();
     res.status(200).json(classes);
   } catch (err) {
     res.status(500).json({
@@ -15,12 +15,13 @@ router.post('/all', async (req, res) => {
 });
 
 //Getting specific problem
-router.post('/creator/', async (req, res) => {
+router.post('/find/', async (req, res) => {
   try {
-    const classes = await Class.find({
-      creator_id: req.body.creator_id
+    const accounts = await Account.find({
+      email: req.body.email,
+      password: req.body.password,
     });
-    res.status(200).json(classes);
+    res.status(200).json(accounts);
   } catch (err) {
     res.status(500).json({
       message: err.message
@@ -30,19 +31,17 @@ router.post('/creator/', async (req, res) => {
 
 //Creating account
 router.post('/', async (req, res) => {
-  const classN = new Class({
+  const account = new Account({
+    email: req.body.email,
+    password: req.body.password,
     name: req.body.name,
-    code: req.body.code,
-    instructor: req.body.instructor,
-    creator_id: req.body.creator_id,
-    course_secret: req.body.course_secret,
   });
   try {
-    const newClass = await classN.save();
-    res.status(201).json(newClass);
+    const newAccount = await account.save();
+    res.status(201).json(newAccount);
   } catch (err) {
     res.status(200).json({
-      message: 'Class already exists.'
+      message: 'Account already exists.'
     });
   }
 });
